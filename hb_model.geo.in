@@ -1,0 +1,34 @@
+SetFactory("OpenCASCADE");
+
+v1() = ShapeFromFile("hb_model.step");
+Recursive Delete { Volume{3}; }
+
+Line(25) = {1, 9};
+Line(26) = {3, 11};
+Line(27) = {5, 13};
+Line(28) = {7, 15};
+Curve Loop(13) = {2, 25, 14, 26};
+Curve Loop(14) = {6, 28, 18, 27};
+Curve Loop(15) = {9, 27, 21, 25};
+Curve Loop(16) = {11, 26, 23, 28};
+Plane Surface(13) = {13};
+Plane Surface(14) = {14};
+Plane Surface(15) = {15};
+Plane Surface(16) = {16};
+
+
+
+vol_N = #v1[];
+vol_N = vol_N - 3;
+N = 18 + 3 * vol_N;
+Surface Loop(3) = {5,11,13,14,15,16,19:N};
+
+Volume(3) = {3};
+
+MeshSize{ PointsOf{ Volume{1:2}; } } = 1.0;
+MeshSize{ PointsOf{ Volume{3}; } } = 1.0 ;
+MeshSize{ PointsOf{ Volume{4:vol_N+3}; } } = 0.5;
+
+Mesh 3;
+OptimizeMesh "Gmsh";
+Save "hb_model.mesh";
